@@ -8,6 +8,13 @@ interface UserInterface {
   password: string
 }
 
+interface UpdateUserInterface {
+  name?: string
+  email?: string
+  phone?: string
+  password?: string
+}
+
 class UserService {
   public async getAllUsers() {
     const users = await User.query().orderBy('created_at', 'asc')
@@ -37,7 +44,7 @@ class UserService {
     await user.delete()
   }
 
-  public async updateUser(id: number, data: UserInterface) {
+  public async updateUser(id: number, data: UpdateUserInterface) {
     const user = await User.findBy('id', id)
 
     if (!user) throw new BadRequestException('User not found', 404)
