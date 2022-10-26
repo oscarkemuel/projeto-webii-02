@@ -9,7 +9,14 @@ Route.group(() => {
   Route.post('/', 'UsersController.create')
   Route.get('/:id', 'UsersController.details')
   Route.delete('/:id', 'UsersController.delete')
-  Route.put('/:id', 'UsersController.update')
+  Route.put('/:id', 'UsersController.update').middleware('auth')
 })
   .prefix('users')
+  .prefix('api/')
+
+Route.group(() => {
+  Route.post('/login', 'SessionsController.store')
+  Route.delete('/logout', 'SessionsController.destroy')
+})
+  .prefix('auth')
   .prefix('api/')

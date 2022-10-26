@@ -5,7 +5,7 @@
  * file.
  */
 
-import LinkToken from 'App/Models/LinkToken'
+import User from 'App/Models/User'
 
 declare module '@ioc:Adonis/Addons/Auth' {
   /*
@@ -34,8 +34,8 @@ declare module '@ioc:Adonis/Addons/Auth' {
     |
     */
     user: {
-      implementation: LucidProviderContract<typeof LinkToken>
-      config: LucidProviderConfig<typeof LinkToken>
+      implementation: LucidProviderContract<typeof User>
+      config: LucidProviderConfig<typeof User>
     }
   }
 
