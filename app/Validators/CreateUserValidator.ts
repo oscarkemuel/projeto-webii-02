@@ -23,6 +23,19 @@ export default class CreateUserValidator {
   })
 
   public messages: CustomMessages = {
-    'password.confirmed': 'The password confirmation does not match',
+    'name.required': 'Name is required',
+    'name.minLength': 'Name is too short',
+    'name.maxLength': 'Name is too long',
+    'email.required': 'Email is required',
+    'email.email': 'Email is invalid',
+    'email.unique': 'Email is already taken',
+    'phone.required': 'Phone is required',
+    'phone.minLength': 'Phone is too short',
+    'phone.maxLength': 'Phone is too long',
+    'phone.unique': 'Phone is already taken',
+    'password.required': 'Password is required',
+    'password.minLength': 'Password is too short',
+    'password.maxLength': 'Password is too long',
+    'password.confirmed': 'Password does not match',
   }
 }

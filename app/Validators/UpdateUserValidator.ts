@@ -22,5 +22,16 @@ export default class UpdateUserValidator {
     ]),
   })
 
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'name.minLength': 'Name is too short',
+    'name.maxLength': 'Name is too long',
+    'email.email': 'Email is invalid',
+    'email.unique': 'Email is already taken',
+    'phone.minLength': 'Phone is too short',
+    'phone.maxLength': 'Phone is too long',
+    'phone.unique': 'Phone is already taken',
+    'password.minLength': 'Password is too short',
+    'password.maxLength': 'Password is too long',
+    'password.confirmed': 'Password does not match',
+  }
 }
