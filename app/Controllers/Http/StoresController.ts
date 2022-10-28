@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import StoreService from 'App/Services/StoreService'
 import UserService from 'App/Services/UserService'
+import ChangeOwnerValidator from 'App/Validators/ChangeOwnerValidator'
 import CreateStoreValidator from 'App/Validators/CreateStoreValidator'
 import UpdateStoreValidator from 'App/Validators/UpdateStoreValidator'
 
@@ -9,7 +10,7 @@ export default class StoresController {
   public userService = new UserService()
 
   public async showList({ response }: HttpContextContract) {
-    const stores = await this.storeService.getStores()
+    const stores = await this.storeService.getAllStores()
 
     return response.ok({ stores })
   }
@@ -42,6 +43,15 @@ export default class StoresController {
     const id = request.param('id')
 
     await this.storeService.deleteStore(id)
+
+    return response.noContent()
+  }
+
+  public async changeOwner({ request, response }: HttpContextContract) {
+    const storeId = request.param('id')
+    const data = await request.validate(ChangeOwnerValidator)
+
+    await this.storeService.changeOwner(storeId, data.userId)
 
     return response.noContent()
   }

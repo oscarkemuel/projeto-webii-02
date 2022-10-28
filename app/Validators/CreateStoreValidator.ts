@@ -8,6 +8,7 @@ export default class CreateStoreValidator {
     name: schema.string({ trim: true }, [rules.minLength(3), rules.maxLength(255)]),
     description: schema.string({ trim: true }, [rules.minLength(3), rules.maxLength(255)]),
     address: schema.string({ trim: true }, [rules.minLength(3), rules.maxLength(255)]),
+    ownerId: schema.number([rules.exists({ table: 'users', column: 'id' })]),
   })
 
   public messages: CustomMessages = {
@@ -20,5 +21,7 @@ export default class CreateStoreValidator {
     'address.required': 'Address is required',
     'address.minLength': 'Address is too short',
     'address.maxLength': 'Address is too long',
+    'ownerId.required': 'Owner is required',
+    'ownerId.exists': 'User does not exist',
   }
 }

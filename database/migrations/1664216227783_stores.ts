@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.string('name').notNullable()
       table.string('address').notNullable()
       table.string('description').notNullable()
+      table.integer('owner_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

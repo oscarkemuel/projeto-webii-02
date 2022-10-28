@@ -40,12 +40,6 @@ class StoreService {
     return store
   }
 
-  public async getStores() {
-    const stores = await Store.all()
-
-    return stores
-  }
-
   public async deleteStore(id: number) {
     const store = await Store.findBy('id', id)
 
@@ -66,6 +60,7 @@ class StoreService {
     const store = await Store.findBy('id', id)
 
     if (!store) throw new BadRequestException('Store not found', 404)
+    await store.load('owner')
 
     await store.load('sellers')
     await Promise.all(store.sellers.map(async (seller) => await seller.load('user')))
@@ -88,6 +83,16 @@ class StoreService {
     const stores = await Store.query().orderBy('created_at', 'asc')
 
     return stores
+  }
+
+  public async changeOwner(storeId: number, userId: number) {
+    const store = await Store.findBy('id', storeId)
+    if (!store) throw new BadRequestException('Store not found', 404)
+
+    store.ownerId = userId
+    await store.save()
+
+    return store
   }
 
   public async getProductByStoreId(id: number) {

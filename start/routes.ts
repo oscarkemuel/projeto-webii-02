@@ -27,6 +27,7 @@ Route.group(() => {
   Route.get('/:id', 'StoresController.details')
   Route.delete('/:id', 'StoresController.delete')
   Route.put('/:id', 'StoresController.update')
+  Route.patch('/:id/change-owner', 'StoresController.changeOwner')
 })
   .prefix('stores')
   .prefix('api/')
