@@ -7,8 +7,8 @@ Route.get('/', async () => {
 Route.group(() => {
   Route.get('/', 'UsersController.showList')
   Route.post('/', 'UsersController.create')
-  Route.get('/:id', 'UsersController.details')
-  Route.delete('/:id', 'UsersController.delete')
+  Route.get('/:id', 'UsersController.details').middleware('auth')
+  Route.delete('/:id', 'UsersController.delete').middleware('auth')
   Route.put('/:id', 'UsersController.update').middleware('auth')
 })
   .prefix('users')
@@ -20,3 +20,14 @@ Route.group(() => {
 })
   .prefix('auth')
   .prefix('api/')
+
+Route.group(() => {
+  Route.get('/', 'StoresController.showList')
+  Route.post('/', 'StoresController.create')
+  Route.get('/:id', 'StoresController.details')
+  Route.delete('/:id', 'StoresController.delete')
+  Route.put('/:id', 'StoresController.update')
+})
+  .prefix('stores')
+  .prefix('api/')
+  .middleware('auth')

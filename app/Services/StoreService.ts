@@ -10,6 +10,12 @@ interface StoreDataPayload {
   address: string
 }
 
+interface UpdateStorePayload {
+  name?: string
+  description?: string
+  address?: string
+}
+
 interface NewSaleData {
   productId: number
   sellerId: number
@@ -23,18 +29,21 @@ class StoreService {
     return store
   }
 
-  public async updateStore(data: StoreDataPayload, id: number) {
+  public async updateStore(data: UpdateStorePayload, id: number) {
     const store = await Store.findBy('id', id)
 
     if (!store) throw new BadRequestException('Store not found', 404)
 
-    store.name = data.name
-    store.description = data.description
-    store.address = data.address
-
+    store.merge(data)
     await store.save()
 
     return store
+  }
+
+  public async getStores() {
+    const stores = await Store.all()
+
+    return stores
   }
 
   public async deleteStore(id: number) {
@@ -101,6 +110,9 @@ class StoreService {
     })
 
     await store.related('sellers').save(seller)
+    await seller.load('user')
+
+    return seller
   }
 
   public async removeSeller(storeId: number, sellerId: number) {
@@ -114,7 +126,7 @@ class StoreService {
     const price = product.price * data.quantity
 
     if (product.quantity < data.quantity) {
-      throw new Error('Quantidade de produtos insuficiente')
+      throw new BadRequestException('Quantidade de produtos insuficiente', 400)
     }
 
     const sale = await Sale.create({
