@@ -30,28 +30,37 @@ export default class StoresController {
     return response.created({ store })
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, bouncer }: HttpContextContract) {
     const paylaod = await request.validate(UpdateStoreValidator)
     const id = request.param('id')
+
+    const store = await this.storeService.getStoreById(id)
+    await bouncer.authorize('ownerStore', store)
 
     await this.storeService.updateStore(paylaod, id)
 
     return response.noContent()
   }
 
-  public async delete({ request, response }: HttpContextContract) {
+  public async delete({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
+
+    const store = await this.storeService.getStoreById(id)
+    await bouncer.authorize('ownerStore', store)
 
     await this.storeService.deleteStore(id)
 
     return response.noContent()
   }
 
-  public async changeOwner({ request, response }: HttpContextContract) {
-    const storeId = request.param('id')
+  public async changeOwner({ request, response, bouncer }: HttpContextContract) {
+    const id = request.param('id')
     const data = await request.validate(ChangeOwnerValidator)
 
-    await this.storeService.changeOwner(storeId, data.userId)
+    const store = await this.storeService.getStoreById(id)
+    await bouncer.authorize('ownerStore', store)
+
+    await this.storeService.changeOwner(id, data.userId)
 
     return response.noContent()
   }
