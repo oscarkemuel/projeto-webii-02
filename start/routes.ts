@@ -28,12 +28,16 @@ Route.group(() => {
   Route.delete('/:id', 'StoresController.delete')
   Route.put('/:id', 'StoresController.update')
   Route.patch('/:id/change-owner', 'StoresController.changeOwner')
+  Route.post('/:id/add-seller', 'StoresController.addSeller')
+  Route.delete('/:id/remove-seller/:sellerId', 'StoresController.removeSeller')
+  Route.post('/:id/add-sale', 'StoresController.addSale')
 })
   .prefix('stores')
   .prefix('api/')
   .middleware('auth')
 
 Route.group(() => {
+  Route.get('/', 'ProductsController.index')
   Route.post('/', 'ProductsController.create')
   Route.get('/:id', 'ProductsController.details')
   Route.delete('/:id', 'ProductsController.delete')

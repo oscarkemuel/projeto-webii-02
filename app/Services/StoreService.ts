@@ -56,6 +56,17 @@ class StoreService {
     return store
   }
 
+  public async getStoreByIdWithSellers(id: number) {
+    const store = await Store.findBy('id', id)
+
+    if (!store) throw new BadRequestException('Store not found', 404)
+
+    await store.load('sellers')
+    await Promise.all(store.sellers.map(async (seller) => await seller.load('user')))
+
+    return store
+  }
+
   public async getStoreByIdWithSellersAndProducts(id: number) {
     const store = await Store.findBy('id', id)
 
@@ -123,12 +134,20 @@ class StoreService {
   public async removeSeller(storeId: number, sellerId: number) {
     const store = await Store.findOrFail(storeId)
 
-    await store.related('sellers').detach([sellerId])
+    const seller = await Seller.findBy('id', sellerId)
+    if (!seller) throw new BadRequestException('Seller not found', 404)
+
+    await store.related('sellers').detach([seller.id])
   }
 
-  public async addNewSale(storeId: number, data: NewSaleData) {
+  public async addSale(storeId: number, data: NewSaleData) {
     const product = await Product.findOrFail(data.productId)
+    const store = await Store.findOrFail(storeId)
     const price = product.price * data.quantity
+
+    await store.load('sellers')
+    const seller = store.sellers.find((seller) => seller.id === data.sellerId)
+    if (!seller) throw new BadRequestException('Seller not found in this store', 404)
 
     if (product.quantity < data.quantity) {
       throw new BadRequestException('Quantidade de produtos insuficiente', 400)

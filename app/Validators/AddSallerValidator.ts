@@ -1,7 +1,7 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class ChangeOwnerValidator {
+export default class AddSallerValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
@@ -9,7 +9,7 @@ export default class ChangeOwnerValidator {
   })
 
   public messages: CustomMessages = {
-    'userId.exists': 'User does not exist',
+    'userId.exists': 'User not found',
     'userId.required': 'User is required',
   }
 }

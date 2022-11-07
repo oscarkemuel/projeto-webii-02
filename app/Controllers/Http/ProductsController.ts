@@ -7,8 +7,17 @@ export default class ProductsController {
   public productService = new ProductService()
   public storeService = new StoreService()
 
-  public async create({ request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
+    const products = await this.productService.getAll()
+
+    return response.ok({ products })
+  }
+
+  public async create({ request, response, bouncer }: HttpContextContract) {
     const payload = await request.validate(CreateProductValidator)
+
+    const store = await this.storeService.getStoreByIdWithSellers(payload.storeId)
+    await bouncer.authorize('ownerOrSallerStore', store)
 
     const product = await this.productService.createProduct(payload)
     return response.created({ product })
@@ -20,16 +29,23 @@ export default class ProductsController {
     return response.ok({ product })
   }
 
-  public async delete({ request, response }: HttpContextContract) {
+  public async delete({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
 
-    await this.productService.deleteProduct(id)
+    const product = await this.productService.getProductById(id)
+    const store = await this.storeService.getStoreByIdWithSellers(product.storeId)
+    await bouncer.authorize('ownerOrSallerStore', store)
+
+    await this.productService.deleteProduct(product.id)
     return response.noContent()
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
     const data = await request.validate(CreateProductValidator)
+
+    const store = await this.storeService.getStoreByIdWithSellers(data.storeId)
+    await bouncer.authorize('ownerOrSallerStore', store)
 
     await this.productService.updateProduct(id, data)
     return response.noContent()

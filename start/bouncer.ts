@@ -8,6 +8,12 @@ export const { actions } = Bouncer.define('ownerStore', (user: User, store: Stor
   }
 
   return Bouncer.deny('You are not the owner of this store')
+}).define('ownerOrSallerStore', (user: User, store: Store) => {
+  if (user.id === store.ownerId || store.sellers.find((seller) => seller.id === user.id)) {
+    return true
+  }
+
+  return Bouncer.deny('You are not the owner or saller of this store')
 })
 
 export const { policies } = Bouncer.registerPolicies({})

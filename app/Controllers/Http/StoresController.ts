@@ -1,6 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import StoreService from 'App/Services/StoreService'
 import UserService from 'App/Services/UserService'
+import AddSaleValidator from 'App/Validators/AddNewSaleValidator'
+import AddSallerValidator from 'App/Validators/AddSallerValidator'
 import ChangeOwnerValidator from 'App/Validators/ChangeOwnerValidator'
 import CreateStoreValidator from 'App/Validators/CreateStoreValidator'
 import UpdateStoreValidator from 'App/Validators/UpdateStoreValidator'
@@ -65,29 +67,38 @@ export default class StoresController {
     return response.noContent()
   }
 
-  public async addSeller({ request, response }: HttpContextContract) {
+  public async addSeller({ request, response, bouncer }: HttpContextContract) {
     const storeId = request.param('id')
-    const data = request.only(['userId'])
+    const data = await request.validate(AddSallerValidator)
+
+    const store = await this.storeService.getStoreById(storeId)
+    await bouncer.authorize('ownerStore', store)
 
     const seller = await this.storeService.addSeller(storeId, data.userId)
 
     return response.created({ seller })
   }
 
-  public async removeSeller({ request, response }: HttpContextContract) {
+  public async removeSeller({ request, response, bouncer }: HttpContextContract) {
     const storeId = request.param('id')
     const sellerId = request.param('sellerId')
+
+    const store = await this.storeService.getStoreById(storeId)
+    await bouncer.authorize('ownerStore', store)
 
     await this.storeService.removeSeller(storeId, sellerId)
 
     return response.noContent()
   }
 
-  public async addNewSale({ request, response }: HttpContextContract) {
+  public async addSale({ request, response, bouncer }: HttpContextContract) {
     const storeId = request.param('id')
-    const data = request.only(['productId', 'sellerId', 'quantity'])
+    const payload = await request.validate(AddSaleValidator)
 
-    const sale = await this.storeService.addNewSale(storeId, data)
+    const store = await this.storeService.getStoreById(storeId)
+    await bouncer.authorize('ownerOrSallerStore', store)
+
+    const sale = await this.storeService.addSale(storeId, payload)
 
     return response.created({ sale })
   }

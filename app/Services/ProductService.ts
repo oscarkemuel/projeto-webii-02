@@ -11,6 +11,12 @@ interface ProductInterface {
 }
 
 class ProductService {
+  public async getAll() {
+    const products = await Product.all()
+
+    return products
+  }
+
   public async createProduct(data: ProductInterface) {
     const product = await Product.create({ ...data })
 
