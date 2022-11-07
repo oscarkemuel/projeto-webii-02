@@ -32,3 +32,13 @@ Route.group(() => {
   .prefix('stores')
   .prefix('api/')
   .middleware('auth')
+
+Route.group(() => {
+  Route.post('/', 'ProductsController.create')
+  Route.get('/:id', 'ProductsController.details')
+  Route.delete('/:id', 'ProductsController.delete')
+  Route.put('/:id', 'ProductsController.update')
+})
+  .prefix('products')
+  .prefix('api/')
+  .middleware('auth')
