@@ -9,7 +9,10 @@ export const { actions } = Bouncer.define('ownerStore', (user: User, store: Stor
 
   return Bouncer.deny('You are not the owner of this store')
 }).define('ownerOrSallerStore', (user: User, store: Store) => {
-  if (user.id === store.ownerId || store.sellers.find((seller) => seller.id === user.id)) {
+  if (
+    user.id === store.ownerId ||
+    store.sellers.filter((seller) => seller.id === user.id).length > 0
+  ) {
     return true
   }
 

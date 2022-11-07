@@ -95,7 +95,7 @@ export default class StoresController {
     const storeId = request.param('id')
     const payload = await request.validate(AddSaleValidator)
 
-    const store = await this.storeService.getStoreById(storeId)
+    const store = await this.storeService.getStoreByIdWithSellers(storeId)
     await bouncer.authorize('ownerOrSallerStore', store)
 
     const sale = await this.storeService.addSale(storeId, payload)
