@@ -20,6 +20,12 @@ export default class UpdateUserValidator {
       rules.minLength(6),
       rules.maxLength(255),
     ]),
+    address: schema.object.optional().members({
+      street: schema.string.optional({ trim: true }, [rules.minLength(3), rules.maxLength(255)]),
+      city: schema.string.optional({ trim: true }, [rules.minLength(3), rules.maxLength(255)]),
+      state: schema.string.optional({ trim: true }, [rules.minLength(2), rules.maxLength(2)]),
+      number: schema.number.optional([rules.range(1, 9999)]),
+    }),
   })
 
   public messages: CustomMessages = {
@@ -33,5 +39,12 @@ export default class UpdateUserValidator {
     'password.minLength': 'Password is too short',
     'password.maxLength': 'Password is too long',
     'password.confirmed': 'Password does not match',
+    'address.street.minLength': 'Street is too short',
+    'address.street.maxLength': 'Street is too long',
+    'address.city.minLength': 'City is too short',
+    'address.city.maxLength': 'City is too long',
+    'address.state.minLength': 'State is too short',
+    'address.state.maxLength': 'State is too long',
+    'address.number.range': 'Number is invalid',
   }
 }

@@ -1,7 +1,16 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  beforeSave,
+  BelongsTo,
+  belongsTo,
+  column,
+  HasMany,
+  hasMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Store from './Store'
+import Address from './Address'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -19,6 +28,9 @@ export default class User extends BaseModel {
   @column({ serializeAs: null })
   public password: string
 
+  @column({ columnName: 'address_id' })
+  public addressId: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -29,6 +41,9 @@ export default class User extends BaseModel {
     foreignKey: 'ownerId',
   })
   public stores: HasMany<typeof Store>
+
+  @belongsTo(() => Address)
+  public address: BelongsTo<typeof Address>
 
   @beforeSave()
   public static async hashPassword(user: User) {

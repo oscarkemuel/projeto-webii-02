@@ -9,7 +9,7 @@ Route.group(() => {
   Route.post('/', 'UsersController.create')
   Route.get('/:id', 'UsersController.details').middleware('auth')
   Route.delete('/:id', 'UsersController.delete').middleware('auth')
-  Route.put('/:id', 'UsersController.update').middleware('auth')
+  Route.patch('/:id', 'UsersController.update').middleware('auth')
 })
   .prefix('users')
   .prefix('api/')
