@@ -41,4 +41,34 @@ Route.group(() => {
   })
     .prefix('products')
     .middleware('auth')
+
+  Route.group(() => {
+    Route.get('/', 'SellersController.index')
+    Route.post('/', 'SellersController.store')
+    Route.get('/:id', 'SellersController.show')
+    Route.delete('/:id', 'SellersController.destroy')
+    Route.put('/:id', 'SellersController.update')
+  })
+    .prefix('sellers')
+    .middleware('auth')
+
+  Route.group(() => {
+    Route.get('/', 'SalesController.index')
+    Route.post('/', 'SalesController.store')
+    Route.get('/:id', 'SalesController.show')
+    Route.delete('/:id', 'SalesController.destroy')
+    Route.put('/:id', 'SalesController.update')
+  })
+    .prefix('sales')
+    .middleware('auth')
+
+  Route.group(() => {
+    Route.get('/', 'AddressesController.index')
+    Route.post('/', 'AddressesController.store')
+    Route.get('/:id', 'AddressesController.show')
+    Route.delete('/:id', 'AddressesController.destroy')
+    Route.put('/:id', 'AddressesController.update')
+  })
+    .prefix('addresses')
+    .middleware('auth')
 }).prefix('api/')
