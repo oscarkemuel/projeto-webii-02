@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AddressService from 'App/Services/AddressService'
+import CreateAddressValidator from 'App/Validators/CreateAddressValidator'
 
 export default class AddressesController {
   public addressService = new AddressService()
@@ -11,14 +12,7 @@ export default class AddressesController {
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
-    const payload = request.only([
-      'street',
-      'number',
-      'complement',
-      'neighborhood',
-      'city',
-      'state',
-    ])
+    const payload = await request.validate(CreateAddressValidator)
 
     await bouncer.authorize('isAdmin')
     const address = await this.addressService.createAddress(payload)
@@ -36,14 +30,7 @@ export default class AddressesController {
 
   public async update({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
-    const payload = request.only([
-      'street',
-      'number',
-      'complement',
-      'neighborhood',
-      'city',
-      'state',
-    ])
+    const payload = await request.validate(CreateAddressValidator)
 
     await bouncer.authorize('isAdmin')
     const address = await this.addressService.updateAddress(id, payload)

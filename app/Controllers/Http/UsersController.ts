@@ -26,9 +26,10 @@ export default class UsersController {
     return response.ok({ user })
   }
 
-  public async delete({ request, response }: HttpContextContract) {
+  public async delete({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
 
+    await bouncer.authorize('isAdmin')
     await this.userService.deleteUser(id)
 
     return response.noContent()
