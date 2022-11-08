@@ -28,6 +28,9 @@ export default class User extends BaseModel {
   @column({ serializeAs: null })
   public password: string
 
+  @column({ columnName: 'is_admin' })
+  public isAdmin: boolean
+
   @column({ columnName: 'address_id' })
   public addressId: number
 

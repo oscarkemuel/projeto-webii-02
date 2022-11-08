@@ -10,9 +10,10 @@ export default class SalesController {
     return response.ok({ sales })
   }
 
-  public async store({ request, response }: HttpContextContract) {
+  public async store({ request, response, bouncer }: HttpContextContract) {
     const payload = request.only(['productId', 'sellerId', 'quantity', 'storeId', 'price'])
 
+    await bouncer.authorize('isAdmin')
     const sale = await this.salesService.createSale(payload)
 
     return response.created({ sale })
@@ -26,18 +27,20 @@ export default class SalesController {
     return response.ok({ sale })
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
     const payload = request.only(['productId', 'sellerId', 'quantity', 'storeId', 'price'])
 
+    await bouncer.authorize('isAdmin')
     const sale = await this.salesService.updateSale(id, payload)
 
     return response.ok({ sale })
   }
 
-  public async destroy({ request, response }: HttpContextContract) {
+  public async destroy({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
 
+    await bouncer.authorize('isAdmin')
     await this.salesService.deleteSale(id)
 
     return response.noContent()

@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.string('phone').notNullable().unique()
       table.string('password').notNullable()
       table.integer('address_id').unsigned().references('id').inTable('addresses')
+      table.boolean('is_admin').defaultTo(false)
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

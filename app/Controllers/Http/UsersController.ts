@@ -34,12 +34,23 @@ export default class UsersController {
     return response.noContent()
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
     const payload = await request.validate(UpdateUserValidator)
+
+    const user = await this.userService.getUserById(id)
+    await bouncer.authorize('isUserHimself', user)
 
     await this.userService.updateUser(id, payload)
 
     return response.noContent()
+  }
+
+  public async makeAdmin({ request, response }: HttpContextContract) {
+    const id = request.param('id')
+
+    const user = await this.userService.userToAdmin(id)
+
+    return response.ok({ user })
   }
 }

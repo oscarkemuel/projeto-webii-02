@@ -82,6 +82,17 @@ class UserService {
 
     return user
   }
+
+  public async userToAdmin(id: number) {
+    const user = await User.findBy('id', id)
+
+    if (!user) throw new BadRequestException('User not found', 404)
+
+    user.isAdmin = true
+    await user.save()
+
+    return user
+  }
 }
 
 export default UserService
