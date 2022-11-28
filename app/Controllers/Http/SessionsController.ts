@@ -14,4 +14,10 @@ export default class SessionsController {
 
     return response.ok({})
   }
+
+  public async getUserByToken({ auth, response }: HttpContextContract) {
+    await auth.user?.load('address')
+
+    return response.ok({ user: auth.user })
+  }
 }

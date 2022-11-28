@@ -17,6 +17,7 @@ Route.group(() => {
   Route.group(() => {
     Route.post('/login', 'SessionsController.store')
     Route.delete('/logout', 'SessionsController.destroy')
+    Route.get('/me', 'SessionsController.getUserByToken').middleware('auth')
   }).prefix('auth')
 
   Route.group(() => {
