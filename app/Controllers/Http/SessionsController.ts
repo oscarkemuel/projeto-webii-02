@@ -6,6 +6,9 @@ export default class SessionsController {
 
     const token = await auth.use('api').attempt(email, password, { expiresIn: '2hours' })
 
+    await auth.user?.load('address')
+    await auth.user?.load('stores')
+
     return response.created({ user: auth.user, token })
   }
 
@@ -17,6 +20,7 @@ export default class SessionsController {
 
   public async getUserByToken({ auth, response }: HttpContextContract) {
     await auth.user?.load('address')
+    await auth.user?.load('stores')
 
     return response.ok({ user: auth.user })
   }

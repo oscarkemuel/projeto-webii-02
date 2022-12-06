@@ -17,6 +17,17 @@ export default class StoresController {
     return response.ok({ stores })
   }
 
+  public async getMyStores({ request, response, bouncer }: HttpContextContract) {
+    const userId = request.param('userId')
+
+    const user = await this.userService.getUserById(userId)
+    await bouncer.authorize('isUserHimself', user)
+
+    await user.load('stores')
+
+    return response.ok({ stores: user.stores })
+  }
+
   public async details({ request, response }: HttpContextContract) {
     const id = request.param('id')
     const store = await this.storeService.getStoreByIdWithSellersAndProducts(id)

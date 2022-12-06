@@ -28,6 +28,8 @@ export const { actions } = Bouncer.define('ownerStore', (user: User, store: Stor
     return Bouncer.deny('You are not admin')
   })
   .define('isUserHimself', (user: User, userToCompare: User) => {
+    console.log(user.name)
+    console.log(userToCompare.name)
     if (user.id === userToCompare.id || user.isAdmin) {
       return true
     }
