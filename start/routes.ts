@@ -31,6 +31,7 @@ Route.group(() => {
     Route.post('/:id/add-seller', 'StoresController.addSeller')
     Route.delete('/:id/remove-seller/:sellerId', 'StoresController.removeSeller')
     Route.post('/:id/add-sale', 'StoresController.addSale')
+    Route.get('/:id/products', 'StoresController.getAllProducts')
   })
     .prefix('stores')
     .middleware('auth')

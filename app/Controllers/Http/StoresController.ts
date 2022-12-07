@@ -66,6 +66,16 @@ export default class StoresController {
     return response.noContent()
   }
 
+  public async getAllProducts({ request, response, bouncer }: HttpContextContract) {
+    const id = request.param('id')
+
+    const store = await this.storeService.getStoreById(id)
+    await bouncer.authorize('ownerOrSallerStore', store)
+    await store.load('products')
+
+    return response.ok({ products: store.products })
+  }
+
   public async changeOwner({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
     const data = await request.validate(ChangeOwnerValidator)
