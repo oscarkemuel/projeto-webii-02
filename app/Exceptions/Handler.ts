@@ -15,9 +15,48 @@
 
 import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
+import { Exception } from '@adonisjs/core/build/standalone'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor() {
     super(Logger)
+  }
+
+  public async handle(error: Exception, ctx: HttpContextContract) {
+    if (error.status === 422) {
+      return ctx.response.status(error.status).send({
+        code: 'BAD_REQUEST',
+        message: error['messages']?.errors[0].message,
+        status: error.status,
+        errors: error['messages']?.errors ? error['messages'].errors : '',
+      })
+    } else if (error.status === 404 || error.code === 'E_ROW_NOT_FOUND') {
+      return ctx.response.status(error.status).send({
+        code: 'BAD_REQUEST',
+        message: error.message ? error.message : 'Recurso não encontrado',
+        messageContent: 'resource not found',
+        status: 404,
+        errors: error['messages']?.errors ? error['messages'].errors : '',
+      })
+    } else if (['E_INVALID_AUTH_UID', 'E_INVALID_AUTH_PASSWORD'].includes(error.code || '')) {
+      return ctx.response.status(error.status).send({
+        code: 'BAD_REQUEST',
+        message: 'Credenciais inválidas',
+        messageContent: 'invalid credentials',
+        status: error.status,
+        errors: error['messages']?.errors ? error['messages'].errors : '',
+      })
+    } else if (error.status === 401) {
+      return ctx.response.status(error.status).send({
+        code: 'BAD_REQUEST',
+        message: error.message ? error.message : 'Não autorizado',
+        messageContent: 'unauthorized access',
+        status: error.status,
+        errors: error['messages']?.errors ? error['messages'].errors : '',
+      })
+    }
+
+    return super.handle(error, ctx)
   }
 }
