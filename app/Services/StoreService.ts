@@ -96,6 +96,12 @@ class StoreService {
   public async getAllStores() {
     const stores = await Store.query().orderBy('created_at', 'asc')
 
+    await Promise.all(
+      stores.map(async (store) => {
+        await store.load('owner')
+      })
+    )
+
     return stores
   }
 

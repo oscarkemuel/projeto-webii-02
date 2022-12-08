@@ -22,7 +22,6 @@ Route.group(() => {
   }).prefix('auth')
 
   Route.group(() => {
-    Route.get('/', 'StoresController.showList')
     Route.get('/my-stores/:userId', 'StoresController.getMyStores')
     Route.post('/', 'StoresController.create')
     Route.get('/:id', 'StoresController.details')
@@ -79,3 +78,5 @@ Route.group(() => {
     .prefix('addresses')
     .middleware('auth')
 }).prefix('api/')
+
+Route.get('api/stores', 'StoresController.showList')
