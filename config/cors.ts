@@ -44,7 +44,12 @@ const corsConfig: CorsConfig = {
   |                     one of the above values.
   |
   */
-  origin: 'https://store-manager-front-homolog.vercel.app/',
+  origin: [
+    'https://store-manager-front-homolog.vercel.app',
+    'store-manager-front-homolog.vercel.app',
+    'https://store-manager-front-prod.vercel.app',
+    'store-manager-front-prod.vercel.app',
+  ],
 
   /*
   |--------------------------------------------------------------------------
