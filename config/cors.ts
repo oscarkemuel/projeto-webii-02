@@ -49,6 +49,8 @@ const corsConfig: CorsConfig = {
     'store-manager-front-homolog.vercel.app',
     'https://store-manager-front-prod.vercel.app',
     'store-manager-front-prod.vercel.app',
+    'http://localhost:3000',
+    'localhost:3000',
   ],
 
   /*
