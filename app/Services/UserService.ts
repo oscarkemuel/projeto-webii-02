@@ -58,6 +58,14 @@ class UserService {
     return user
   }
 
+  public async getUserByEmail(email: string) {
+    const user = await User.findBy('email', email)
+
+    if (!user) throw new BadRequestException('User not found', 404)
+
+    return user
+  }
+
   public async deleteUser(id: number) {
     const user = await User.findBy('id', id)
 

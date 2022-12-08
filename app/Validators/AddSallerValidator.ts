@@ -5,11 +5,15 @@ export default class AddSallerValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    userId: schema.number([rules.exists({ table: 'users', column: 'id' })]),
+    email: schema.string({ trim: true }, [
+      rules.email(),
+      rules.exists({ table: 'users', column: 'email' }),
+    ]),
   })
 
   public messages: CustomMessages = {
-    'userId.exists': 'User not found',
-    'userId.required': 'User is required',
+    'email.required': 'Email is required',
+    'email.email': 'Email is not valid',
+    'email.exists': 'User with this email does not exist',
   }
 }

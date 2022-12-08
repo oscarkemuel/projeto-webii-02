@@ -1,9 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import StoreService from 'App/Services/StoreService'
 import UserService from 'App/Services/UserService'
 import CreateUserValidator from 'App/Validators/CreateUserValidator'
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
 
 export default class UsersController {
+  public storeService = new StoreService()
   public userService = new UserService()
 
   public async showList({ response }: HttpContextContract) {
@@ -45,6 +47,17 @@ export default class UsersController {
     await this.userService.updateUser(id, payload)
 
     return response.noContent()
+  }
+
+  public async getStoresByUserSeller({ request, response, bouncer }: HttpContextContract) {
+    const id = request.param('id')
+
+    const user = await this.userService.getUserById(id)
+    await bouncer.authorize('isUserHimself', user)
+
+    const stores = await this.storeService.getStoresByUserSeller(user.id)
+
+    return response.ok({ stores })
   }
 
   public async makeAdmin({ request, response }: HttpContextContract) {

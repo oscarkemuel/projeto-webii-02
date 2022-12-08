@@ -9,10 +9,12 @@ export const { actions } = Bouncer.define('ownerStore', (user: User, store: Stor
 
   return Bouncer.deny('You are not the owner of this store')
 })
-  .define('ownerOrSallerStore', (user: User, store: Store) => {
+  .define('ownerOrSallerStore', async (user: User, store: Store) => {
+    await store.load('sellers')
+
     if (
       user.id === store.ownerId ||
-      store.sellers.filter((seller) => seller.id === user.id).length > 0 ||
+      store.sellers.filter((seller) => seller.userId === user.id).length > 0 ||
       user.isAdmin
     ) {
       return true
@@ -28,8 +30,6 @@ export const { actions } = Bouncer.define('ownerStore', (user: User, store: Stor
     return Bouncer.deny('You are not admin')
   })
   .define('isUserHimself', (user: User, userToCompare: User) => {
-    console.log(user.name)
-    console.log(userToCompare.name)
     if (user.id === userToCompare.id || user.isAdmin) {
       return true
     }

@@ -11,6 +11,7 @@ Route.group(() => {
     Route.get('/:id', 'UsersController.details').middleware('auth')
     Route.delete('/:id', 'UsersController.delete').middleware('auth')
     Route.patch('/:id', 'UsersController.update').middleware('auth')
+    Route.get('/:id/my-stores-sellers', 'UsersController.getStoresByUserSeller').middleware('auth')
     Route.patch('/:id/admin', 'UsersController.makeAdmin')
   }).prefix('users')
 
@@ -32,6 +33,8 @@ Route.group(() => {
     Route.delete('/:id/remove-seller/:sellerId', 'StoresController.removeSeller')
     Route.post('/:id/add-sale', 'StoresController.addSale')
     Route.get('/:id/products', 'StoresController.getAllProducts')
+    Route.get('/:id/sales', 'StoresController.getAllSales')
+    Route.get('/:id/sellers', 'StoresController.getAllSellers')
   })
     .prefix('stores')
     .middleware('auth')

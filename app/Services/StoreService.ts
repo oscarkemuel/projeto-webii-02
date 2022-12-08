@@ -3,6 +3,7 @@ import Product from 'App/Models/Product'
 import Sale from 'App/Models/Sale'
 import Seller from 'App/Models/Seller'
 import Store from 'App/Models/Store'
+import UserService from './UserService'
 
 interface StoreDataPayload {
   name: string
@@ -23,6 +24,8 @@ interface NewSaleData {
 }
 
 class StoreService {
+  public userService = new UserService()
+
   public async createStore(data: StoreDataPayload) {
     const store = await Store.create(data)
 
@@ -118,11 +121,12 @@ class StoreService {
     return products
   }
 
-  public async addSeller(storeId: number, userId: number) {
+  public async addSeller(storeId: number, email: string) {
     const store = await Store.findOrFail(storeId)
+    const user = await this.userService.getUserByEmail(email)
 
     const seller = await Seller.firstOrNew({
-      userId: userId,
+      userId: user.id,
     })
 
     await store.related('sellers').save(seller)
@@ -165,6 +169,18 @@ class StoreService {
     await product.save()
 
     return sale
+  }
+
+  public async getStoresByUserSeller(userId: number) {
+    const user = await this.userService.getUserById(userId)
+
+    const stores = await Store.query()
+      .whereHas('sellers', (query) => {
+        query.where('user_id', user.id)
+      })
+      .orderBy('created_at', 'asc')
+
+    return stores
   }
 }
 

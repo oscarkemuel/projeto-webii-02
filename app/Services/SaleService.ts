@@ -25,7 +25,6 @@ class SaleService {
   }
 
   public async createSale(data: SaleInterface) {
-    console.log(data)
     const sale = await Sale.create(data)
 
     return sale

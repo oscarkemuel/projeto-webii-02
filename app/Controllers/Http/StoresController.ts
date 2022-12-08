@@ -48,7 +48,7 @@ export default class StoresController {
     const id = request.param('id')
 
     const store = await this.storeService.getStoreById(id)
-    await bouncer.authorize('ownerStore', store)
+    await bouncer.authorize('ownerOrSallerStore', store)
 
     await this.storeService.updateStore(paylaod, id)
 
@@ -76,6 +76,40 @@ export default class StoresController {
     return response.ok({ products: store.products })
   }
 
+  public async getAllSales({ request, response, bouncer }: HttpContextContract) {
+    const id = request.param('id')
+
+    const store = await this.storeService.getStoreById(id)
+    await bouncer.authorize('ownerOrSallerStore', store)
+    await store.load('sales')
+
+    await Promise.all(
+      store.sales.map(async (sale) => {
+        await sale.load('product')
+        await sale.load('seller')
+        await sale.seller.load('user')
+      })
+    )
+
+    return response.ok({ sales: store.sales })
+  }
+
+  public async getAllSellers({ request, response, bouncer }: HttpContextContract) {
+    const id = request.param('id')
+
+    const store = await this.storeService.getStoreById(id)
+    await bouncer.authorize('ownerOrSallerStore', store)
+    await store.load('sellers')
+
+    await Promise.all(
+      store.sellers.map(async (seller) => {
+        await seller.load('user')
+      })
+    )
+
+    return response.ok({ sellers: store.sellers })
+  }
+
   public async changeOwner({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
     const data = await request.validate(ChangeOwnerValidator)
@@ -93,9 +127,9 @@ export default class StoresController {
     const data = await request.validate(AddSallerValidator)
 
     const store = await this.storeService.getStoreById(storeId)
-    await bouncer.authorize('ownerStore', store)
+    await bouncer.authorize('ownerOrSallerStore', store)
 
-    const seller = await this.storeService.addSeller(storeId, data.userId)
+    const seller = await this.storeService.addSeller(storeId, data.email)
 
     return response.created({ seller })
   }
@@ -105,7 +139,7 @@ export default class StoresController {
     const sellerId = request.param('sellerId')
 
     const store = await this.storeService.getStoreById(storeId)
-    await bouncer.authorize('ownerStore', store)
+    await bouncer.authorize('ownerOrSallerStore', store)
 
     await this.storeService.removeSeller(storeId, sellerId)
 
