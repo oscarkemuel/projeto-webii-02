@@ -1,9 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import SellerService from 'App/Services/SellerService'
+import UserService from 'App/Services/UserService'
 import AddSallerValidator from 'App/Validators/AddSallerValidator'
 
 export default class SellersController {
   public sellersService = new SellerService()
+  public userService = new UserService()
 
   public async index({ response }: HttpContextContract) {
     const sellers = await this.sellersService.getSellers()
@@ -13,9 +15,10 @@ export default class SellersController {
 
   public async store({ request, response, bouncer }: HttpContextContract) {
     const payload = await request.validate(AddSallerValidator)
+    const user = await this.userService.getUserByEmail(payload.email)
 
     await bouncer.authorize('isAdmin')
-    const seller = await this.sellersService.createSeller(payload)
+    const seller = await this.sellersService.createSeller({ userId: user.id })
 
     return response.created({ seller })
   }
@@ -31,9 +34,10 @@ export default class SellersController {
   public async update({ request, response, bouncer }: HttpContextContract) {
     const id = request.param('id')
     const payload = await request.validate(AddSallerValidator)
+    const user = await this.userService.getUserByEmail(payload.email)
 
     await bouncer.authorize('isAdmin')
-    const seller = await this.sellersService.updateSeller(id, payload)
+    const seller = await this.sellersService.updateSeller(id, { userId: user.id })
 
     return response.ok({ seller })
   }
